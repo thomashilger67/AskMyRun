@@ -1,0 +1,5 @@
+/.venv
+.gitignore
+/__pycache__
+build.sh
+token.txt

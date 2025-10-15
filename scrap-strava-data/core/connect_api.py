@@ -6,7 +6,7 @@ load_dotenv()
 
 client_id = os.getenv("STRAVA_CLIENT_ID")
 client_secret = os.getenv("STRAVA_CLIENT_SECRET")
-client_refresh_token= "3be6c5627d604176942281909f99e027f11192b3"
+client_refresh_token= "d9989748c1574cfe6db8cc8307824b2192ff6649"
 
 payload = {
     'client_id': client_id,
@@ -17,5 +17,5 @@ payload = {
 response = requests.post(url=f"https://www.strava.com/oauth/token", data=payload)
 
 
-
+print(response.json())
 print(response.json()['access_token'])
