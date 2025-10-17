@@ -2,3 +2,4 @@ python-dateutil
 python-dotenv
 requests 
 google-cloud-storage
+pandas 

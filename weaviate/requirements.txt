@@ -1,0 +1,3 @@
+weaviate-client
+sentence-transformers
+numpy==1.26.4

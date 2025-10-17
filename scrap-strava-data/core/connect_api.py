@@ -6,7 +6,7 @@ load_dotenv()
 
 client_id = os.getenv("STRAVA_CLIENT_ID")
 client_secret = os.getenv("STRAVA_CLIENT_SECRET")
-client_refresh_token= "d9989748c1574cfe6db8cc8307824b2192ff6649"
+client_refresh_token= "a7f2843fabb0bc306e809a74fe4470d579dc0743"
 
 payload = {
     'client_id': client_id,
