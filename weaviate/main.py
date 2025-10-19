@@ -2,7 +2,6 @@ import weaviate
 import pandas as pd 
 import weaviate.classes as wvc
 from summary import generate_summary
-from sentence_transformers import SentenceTransformer
 
 
 client = weaviate.connect_to_local()

@@ -1,31 +1,58 @@
-
+from sentence_transformers import SentenceTransformer
+from datetime import datetime
+import logging
 def generate_summary(row):
-    # Basic activity description
+
+    date = row.get('start_date', 'an unknown date')
+    date_pretty =datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ").strftime("%B %d, %Y at %H:%M")
+    name = row.get('name', 'Unnamed activity')
+    sport_type = row.get('type', 'activity').lower()
+    distance = row.get('distance', 0)
+    pace = row.get('pace', None)
+    avg_speed = row.get('average_speed', None)
+    elevation = row.get('total_elevation_gain', 0)
+
     summary = (
-        f"Activity on {row['start_date']} called {row['name']}: You completed a {row['distance']}km {row['type']} "
-        f"with an average pace of {row['pace']} min/km and an average speed of {row['average_speed']} km/h. "
-        f"The route had {row['total_elevation_gain']}m of elevation gain. "
+        f"On {date_pretty}, you completed a {distance:.2f} kilometer {sport_type} titled '{name}'. "
+        f"You maintained an average pace of {pace} minutes per kilometer "
+        f"and an average speed of {avg_speed} kilometers per hour. "
+        f"The route included a total elevation gain of {elevation} meters. "
     )
 
-    # Performance metrics with context
-    summary += (
-        f"Performance details: "
-        f"Your max speed was {row['max_speed']} km/h, and your average heart rate was {row['average_heartrate']} bpm (max: {row['max_heartrate']} bpm). "
-    )
-
-    # Cadence and power (if applicable)
-    if row['type'] in ['ride', 'cycling']:
+    if 'average_heartrate' in row and row['average_heartrate']:
         summary += (
-            f"Your average cadence was {row['average_cadence']} rpm. "
-            f"Power output: {row['average_watts']}W average, {row['max_watts']}W max, and {row['weighted_average_watts']}W weighted average. "
+            f"Your average heart rate was {row['average_heartrate']} bpm, "
+            f"with a maximum of {row.get('max_heartrate', 'unknown')} bpm. "
         )
 
-    summary += (
-        f"Metadata: "
-        f"distance_km={row['distance']}, pace_min_per_km={row['pace']}, "
-        f"elevation_gain_m={row['total_elevation_gain']}, type={row['type']}, "
-        f"start_date={row['start_date']}, average_heartrate={row['average_heartrate']}, "
-        f"max_speed_kmh={row['max_speed']}, average_speed_kmh={row['average_speed']}"
-    )
+    if 'max_speed' in row:
+        summary += f"Your maximum speed reached {row['max_speed']} km/h. "
 
+    # Add sport-specific details
+    if sport_type in ['ride', 'cycling']:
+        summary += (
+            f"Your average cadence was {row.get('average_cadence', 'N/A')} rpm. "
+            f"Power output averaged {row.get('average_watts', 'N/A')} watts "
+            f"(max {row.get('max_watts', 'N/A')}W, weighted average {row.get('weighted_average_watts', 'N/A')}W). "
+        )
     return summary
+
+
+def embed_summary(summary):
+    """
+    Generate an embedding for the given summary using a open-source model.
+
+    Parameters:
+        summary (str): The summary text to be embedded.
+
+    Returns:
+        list: The embedding vector for the summary.
+    """
+    try:
+        model = SentenceTransformer("sentence-transformers/all-MiniLM-L12-v2")
+        embedding = model.encode(summary)
+        logging.info("Successfully generated embedding.")
+    except Exception as e:
+        logging.error(f"Error generating embedding: {e}")
+
+    return embedding
