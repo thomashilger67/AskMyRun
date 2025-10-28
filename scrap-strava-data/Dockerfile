@@ -13,4 +13,4 @@ COPY .env .
 COPY main.py . 
 
 
-CMD sh -c "python main.py ${TICKERS}"
+CMD sh -c "python main.py"
