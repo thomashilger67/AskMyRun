@@ -1,0 +1,12 @@
+services:
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.33.1
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      - "PERSISTENCE_DATA_PATH=/var/lib/weaviate"
+      - "CLUSTER_HOSTNAME=node1"
+    volumes:
+      - /home/${USER}/data:/var/lib/weaviate
+    
